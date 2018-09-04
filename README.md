@@ -1,7 +1,20 @@
-Visualizing Temperature in Stuttgart
-================
-Fabio Votta
-31 8 2018
++++
+date = 2018-09-01
+lastmod = 2018-09-01
+draft = false
+tags = ["dataviz"]
+title = "Visualizing Temperature Rise in Stuttgart, Germany over Time"
+math = true
+summary = """
+Just a quick use-case of gganimate to visualize the rise of average temperature in my home town.
+"""
+
+[header]
+image = "headers/temp_header.png"
+caption = "Average Daily Temperature in Stuttgart, Germany"
+
++++
+
 
 This is a quick use-case of gganimate to visualize the rise of average temperature in my home town, Stuttgart, Germany.
 
@@ -176,55 +189,85 @@ magick::image_write(
 
 [![](https://github.com/favstats/temperature_viz/blob/master/images/yearly_temp.gif?raw=true)](https://github.com/favstats/temperature_viz/blob/master/images/yearly_temp.gif?raw=true) 
 
+### Average Temperature over Time by Year
+
+``` r
+p3 <- temp_stgt %>% 
+  filter(year %in% c(1953, 1960, 1990, 2017)) %>%
+  ggplot(aes(day, avg_temp_day, group = year, color = year)) +
+  geom_line() + 
+  geom_segment(aes(xend = 365, yend = avg_temp_day), linetype = 2, colour = 'grey') + 
+  geom_point(size = 2) + 
+  geom_text(aes(x = 365, label = year), hjust = 0, size = 3, fontface = "bold") + 
+  coord_cartesian(clip = 'off') + 
+  ggthemes::theme_hc()  +
+  labs(title = "Average Daily Temperature in Stuttgart (1953, 1960, 1990, 2017)", 
+       caption = "Data: Der Deutsche Wetterdienst (DWD)",
+       y = "Average Daily Temperature", x = "") +
+  scale_x_continuous(breaks = seq(0, 365, length.out = 12), labels = months) +
+  viridis::scale_color_viridis("Average Yearly Temperature", direction = -1, discrete = F) +
+  guides(colour = F) +
+  theme(title = element_text(size = 15, face = "bold"), 
+        axis.text.x = element_text(size = 14, face = "bold"), 
+        axis.text.y = element_text(size = 10, face = "italic")) +
+  # Here comes the gganimate code
+  transition_reveal(year, day) + 
+  enter_fade() + 
+  exit_fade() +
+  ease_aes('linear') 
+
+# create animation
+p3 %>% animate(
+  nframes = 500, fps = 15, width = 1000, height = 600, detail = 3
+)
+
+anim_save("images/daily_temp_reveal.gif")
+```
+
+
+[![](https://github.com/favstats/temperature_viz/blob/master/images/yearly_temp.gif?raw=true)](https://github.com/favstats/temperature_viz/blob/master/images/daily_temp_reveal.gif?raw=true) 
+
+
 ``` r
 sessionInfo()
 ```
 
-      ## R version 3.5.0 (2018-04-23)
-      ## Platform: x86_64-w64-mingw32/x64 (64-bit)
-      ## Running under: Windows >= 8 x64 (build 9200)
-      ## 
-      ## Matrix products: default
-      ## 
-      ## locale:
-      ## [1] LC_COLLATE=German_Germany.1252 
-      ## [2] LC_CTYPE=German_Germany.1252   
-      ## [3] LC_MONETARY=German_Germany.1252
-      ## [4] LC_NUMERIC=C                   
-      ## [5] LC_TIME=German_Germany.1252    
-      ## 
-      ## attached base packages:
-      ## [1] stats     graphics  grDevices utils     datasets  methods  
-      ## [7] base     
-      ## 
-      ## other attached packages:
-      ##  [1] gganimate_0.9.9.9999 rvest_0.3.2         
-      ##  [3] xml2_1.2.0           forcats_0.3.0       
-      ##  [5] stringr_1.3.0        dplyr_0.7.5         
-      ##  [7] purrr_0.2.4          readr_1.1.1         
-      ##  [9] tidyr_0.8.1          tibble_1.4.2        
-      ## [11] ggplot2_3.0.0.9000   tidyverse_1.2.1     
-      ## 
-      ## loaded via a namespace (and not attached):
-      ##  [1] Rcpp_0.12.18      lubridate_1.7.4   lattice_0.20-35  
-      ##  [4] prettyunits_1.0.2 png_0.1-7         class_7.3-14     
-      ##  [7] digest_0.6.15     assertthat_0.2.0  psych_1.8.3.3    
-      ## [10] R6_2.2.2          cellranger_1.1.0  plyr_1.8.4       
-      ## [13] e1071_1.6-8       httr_1.3.1        pillar_1.2.1     
-      ## [16] rlang_0.2.1       progress_1.2.0    lazyeval_0.2.1   
-      ## [19] readxl_1.1.0      rstudioapi_0.7    gifski_0.8.3     
-      ## [22] magick_1.9        labeling_0.3      foreign_0.8-70   
-      ## [25] munsell_0.4.3     broom_0.4.4       compiler_3.5.0   
-      ## [28] modelr_0.1.1      pkgconfig_2.0.1   mnormt_1.5-5     
-      ## [31] tidyselect_0.2.4  gridExtra_2.3     lpSolve_5.6.13   
-      ## [34] viridisLite_0.3.0 crayon_1.3.4      withr_2.1.2      
-      ## [37] sf_0.6-3          grid_3.5.0        nlme_3.1-137     
-      ## [40] spData_0.2.8.3    jsonlite_1.5      gtable_0.2.0     
-      ## [43] DBI_1.0.0         pacman_0.4.6      magrittr_1.5     
-      ## [46] units_0.6-0       scales_0.5.0      cli_1.0.0        
-      ## [49] stringi_1.1.7     farver_1.0        reshape2_1.4.3   
-      ## [52] ggthemes_4.0.0    viridis_0.5.1     bindrcpp_0.2.2   
-      ## [55] transformr_0.1.0  tools_3.5.0       glue_1.3.0       
-      ## [58] tweenr_0.1.5.9999 hms_0.4.2         parallel_3.5.0   
-      ## [61] colorspace_1.4-0  classInt_0.2-3    knitr_1.20       
-      ## [64] bindr_0.1.1       haven_1.1.2       patchwork_0.0.1       
+    R version 3.5.0 (2018-04-23)
+    Platform: x86_64-w64-mingw32/x64 (64-bit)
+    Running under: Windows >= 8 x64 (build 9200)
+    
+    Matrix products: default
+    
+    locale:
+    [1] LC_COLLATE=German_Germany.1252  LC_CTYPE=German_Germany.1252   
+    [3] LC_MONETARY=German_Germany.1252 LC_NUMERIC=C                   
+    [5] LC_TIME=German_Germany.1252    
+    
+    attached base packages:
+    [1] stats     graphics  grDevices utils     datasets  methods   base     
+    
+    other attached packages:
+     [1] bindrcpp_0.2.2       rvest_0.3.2          xml2_1.2.0           forcats_0.3.0       
+     [5] stringr_1.3.0        dplyr_0.7.6          purrr_0.2.5          readr_1.1.1         
+     [9] tidyr_0.8.1          tibble_1.4.2         tidyverse_1.2.1      gganimate_0.9.9.9999
+    [13] ggplot2_3.0.0       
+    
+    loaded via a namespace (and not attached):
+     [1] viridis_0.5.1     httr_1.3.1        jsonlite_1.5      viridisLite_0.3.0
+     [5] transformr_0.1.0  modelr_0.1.1      assertthat_0.2.0  cellranger_1.1.0 
+     [9] progress_1.2.0    pillar_1.2.1      lattice_0.20-35   glue_1.3.0       
+    [13] digest_0.6.16     colorspace_1.4-0  plyr_1.8.4        psych_1.8.3.3    
+    [17] lpSolve_5.6.13    pkgconfig_2.0.1   devtools_1.13.5   broom_0.4.4      
+    [21] gifski_0.8.3      haven_1.1.2       magick_1.9        patchwork_0.0.1  
+    [25] scales_1.0.0      tweenr_0.1.5.9999 git2r_0.23.0      farver_1.0       
+    [29] pacman_0.4.6      withr_2.1.2       lazyeval_0.2.1    cli_1.0.0        
+    [33] mnormt_1.5-5      magrittr_1.5      crayon_1.3.4      readxl_1.1.0     
+    [37] memoise_1.1.0     nlme_3.1-137      foreign_0.8-70    class_7.3-14     
+    [41] ggthemes_4.0.0    tools_3.5.0       prettyunits_1.0.2 hms_0.4.2        
+    [45] munsell_0.5.0     compiler_3.5.0    e1071_1.6-8       rlang_0.2.2      
+    [49] classInt_0.2-3    units_0.6-0       grid_3.5.0        rstudioapi_0.7   
+    [53] labeling_0.3      gtable_0.2.0      DBI_1.0.0         curl_3.2         
+    [57] reshape2_1.4.3    R6_2.2.2          gridExtra_2.3     lubridate_1.7.4  
+    [61] knitr_1.20        bindr_0.1.1       stringi_1.1.7     parallel_3.5.0   
+    [65] Rcpp_0.12.18      sf_0.6-3          png_0.1-7         spData_0.2.8.3   
+    [69] tidyselect_0.2.4 
