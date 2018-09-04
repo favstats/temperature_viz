@@ -209,7 +209,7 @@ anim_save("images/daily_temp_reveal.gif")
 ```
 
 
-[![](https://github.com/favstats/temperature_viz/blob/master/images/yearly_temp.gif?raw=true)](https://github.com/favstats/temperature_viz/blob/master/images/daily_temp_reveal.gif?raw=true) 
+[![](https://github.com/favstats/temperature_viz/blob/master/images/daily_temp_reveal.gif?raw=true)](https://github.com/favstats/temperature_viz/blob/master/images/daily_temp_reveal.gif?raw=true) 
 
 
 ``` r
