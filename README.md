@@ -1,20 +1,4 @@
-+++
-date = 2018-09-01
-lastmod = 2018-09-01
-draft = false
-tags = ["dataviz"]
-title = "Visualizing Temperature Rise in Stuttgart, Germany over Time"
-math = true
-summary = """
-Just a quick use-case of gganimate to visualize the rise of average temperature in my home town.
-"""
-
-[header]
-image = "headers/temp_header.png"
-caption = "Average Daily Temperature in Stuttgart, Germany"
-
-+++
-
+## Temperature over Time in Stuttgart
 
 This is a quick use-case of gganimate to visualize the rise of average temperature in my home town, Stuttgart, Germany.
 
